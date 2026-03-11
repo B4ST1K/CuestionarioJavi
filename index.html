@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuestionario</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --card: #1a1a24;
+      --accent: #7c3aed;
+      --accent-hover: #8b5cf6;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --correct: #22c55e;
+      --wrong: #ef4444;
+      --border: #2d2d3a;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem 1rem;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: var(--text);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .question-block {
+      margin-bottom: 1rem;
+    }
+    .question-block:last-child {
+      margin-bottom: 0;
+    }
+    .question-label {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .option:hover {
+      border-color: var(--accent);
+      background: rgba(124, 58, 237, 0.08);
+    }
+    .option input {
+      accent-color: var(--accent);
+      width: 1.1rem;
+      height: 1.1rem;
+      margin: 0;
+    }
+    .option.correct {
+      border-color: var(--correct);
+      background: rgba(34, 197, 94, 0.12);
+    }
+    .option.wrong {
+      border-color: var(--wrong);
+      background: rgba(239, 68, 68, 0.12);
+    }
+    .option.disabled {
+      pointer-events: none;
+      opacity: 0.85;
+    }
+    .btn {
+      width: 100%;
+      padding: 0.9rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .result {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 1.5rem;
+      font-weight: 600;
+      display: none;
+    }
+    .result.show {
+      display: block;
+    }
+    .result.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--correct);
+      border: 1px solid var(--correct);
+    }
+    .result.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--wrong);
+      border: 1px solid var(--wrong);
+    }
+    .result-detail {
+      font-size: 0.9rem;
+      font-weight: normal;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cuestionario</h1>
+    <form id="quiz-form" class="card">
+      <div id="questions-container">
+        <!-- Las preguntas se insertan aquí por JavaScript -->
+      </div>
+      <button type="submit" class="btn" id="submit-btn">Enviar respuestas</button>
+    </form>
+    <div id="result" class="result card"></div>
+  </div>
+  <script src="datos-temas.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
