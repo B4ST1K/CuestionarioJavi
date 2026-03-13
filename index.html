@@ -187,59 +187,5 @@
   </div>
   <script src="datos-temas.js"></script>
   <script src="quiz.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
-    import {
-      getAuth,
-      signInAnonymously
-    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-    import {
-      getFirestore,
-      addDoc,
-      collection,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCIr0hUknXu_-tb81MSoHBHrlZIYkl1nR0",
-      authDomain: "javiquiz.firebaseapp.com",
-      projectId: "javiquiz",
-      storageBucket: "javiquiz.firebasestorage.app",
-      messagingSenderId: "728428528162",
-      appId: "1:728428528162:web:41e89ad4cb4d544d09807b",
-      measurementId: "G-PMSR2RB644"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    // Analytics puede fallar en localhost/file://; no debe romper el guardado.
-    try {
-      getAnalytics(app);
-    } catch (e) {
-      console.warn("Firebase Analytics no disponible.", e);
-    }
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Disponible para quiz.js (script no-module)
-    window.saveQuizResult = async function saveQuizResult(payload) {
-      // Firestore por defecto suele requerir auth; usamos auth anónimo.
-      try {
-        if (!auth.currentUser) {
-          await signInAnonymously(auth);
-        }
-      } catch (e) {
-        console.warn("No se pudo iniciar sesión anónima.", e);
-      }
-
-      const doc = {
-        ...payload,
-        createdAt: serverTimestamp(),
-        userAgent: navigator.userAgent
-      };
-      await addDoc(collection(db, "quizResults"), doc);
-    };
-  </script>
 </body>
 </html>

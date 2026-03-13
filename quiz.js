@@ -133,7 +133,7 @@ function marcarBloque(block, valorCorrecto) {
 }
 
 /** Valida el formulario y muestra resultado. */
-async function validarYMostrar(e) {
+function validarYMostrar(e) {
   e.preventDefault();
 
   const form = document.getElementById('quiz-form');
@@ -180,21 +180,6 @@ async function validarYMostrar(e) {
   const total = orden.length;
   submitBtn.disabled = true;
   mostrarResultado(correctas, total, correctas === total, errores);
-
-  // Guardar resultado en Firebase (si está configurado)
-  try {
-    if (typeof window.saveQuizResult === 'function') {
-      await window.saveQuizResult({
-        correctas,
-        total,
-        esExito: correctas === total,
-        errores,
-        pagina: location.pathname
-      });
-    }
-  } catch (err) {
-    console.warn('No se pudo guardar el resultado en Firebase.', err);
-  }
 }
 
 /** Inicialización al cargar la página. */
