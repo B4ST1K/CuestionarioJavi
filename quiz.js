@@ -42,9 +42,8 @@ function obtenerPreguntasParaQuiz() {
 /** Genera el HTML de una pregunta (opciones ya barajadas para esa pregunta). */
 function crearPreguntaHTML(pregunta, indiceGlobal) {
   const nombreCampo = `pregunta_${pregunta.id}`;
-  const opcionesBarajadas = barajar(
-    pregunta.opciones.map((texto, idx) => ({ texto, idxOriginal: idx }))
-  );
+  // Mantener el orden original definido en datos-temas.js
+  const opcionesBarajadas = pregunta.opciones.map((texto, idx) => ({ texto, idxOriginal: idx }));
 
   let html = `<div class="question-block" data-id="${pregunta.id}" data-correcta="${pregunta.correcta}">`;
   html += `<span class="question-label">${indiceGlobal + 1}. ${pregunta.texto}</span>`;
