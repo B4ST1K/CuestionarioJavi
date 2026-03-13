@@ -144,6 +144,34 @@
       color: var(--text-muted);
       margin-top: 0.5rem;
     }
+
+    .errors-title {
+      margin-top: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: left;
+    }
+    .errors-list {
+      margin: 0.75rem 0 0;
+      padding-left: 1.25rem;
+      text-align: left;
+      color: var(--text);
+    }
+    .errors-item {
+      margin-bottom: 0.75rem;
+    }
+    .errors-q {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .errors-a {
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .errors-label {
+      color: var(--text);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -159,5 +187,40 @@
   </div>
   <script src="datos-temas.js"></script>
   <script src="quiz.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+    import {
+      getFirestore,
+      addDoc,
+      collection,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIr0hUknXu_-tb81MSoHBHrlZIYkl1nR0",
+      authDomain: "javiquiz.firebaseapp.com",
+      projectId: "javiquiz",
+      storageBucket: "javiquiz.firebasestorage.app",
+      messagingSenderId: "728428528162",
+      appId: "1:728428528162:web:41e89ad4cb4d544d09807b",
+      measurementId: "G-PMSR2RB644"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+
+    const db = getFirestore(app);
+
+    // Disponible para quiz.js (script no-module)
+    window.saveQuizResult = async function saveQuizResult(payload) {
+      const doc = {
+        ...payload,
+        createdAt: serverTimestamp(),
+        userAgent: navigator.userAgent
+      };
+      await addDoc(collection(db, "quizResults"), doc);
+    };
+  </script>
 </body>
 </html>

@@ -86,13 +86,30 @@ function renderizarCuestionario() {
 }
 
 /** Muestra el mensaje de resultado (éxito o error). */
-function mostrarResultado(correctas, total, esExito) {
+function mostrarResultado(correctas, total, esExito, errores = []) {
   const el = document.getElementById('result');
   if (!el) return;
   el.className = 'result card show ' + (esExito ? 'success' : 'error');
+
+  const listaErroresHtml = !esExito && errores.length
+    ? `
+      <div class="errors-title">Preguntas incorrectas:</div>
+      <ul class="errors-list">
+        ${errores.map(err => `
+          <li class="errors-item">
+            <div class="errors-q">${err.numero}. ${err.pregunta}</div>
+            <div class="errors-a"><span class="errors-label">Tu respuesta:</span> ${err.elegida || '—'}</div>
+            <div class="errors-a"><span class="errors-label">Correcta:</span> ${err.correcta}</div>
+          </li>
+        `).join('')}
+      </ul>
+    `
+    : '';
+
   el.innerHTML = `
     ${esExito ? '¡Respuestas correctas!' : 'Hay errores'}
     <div class="result-detail">${correctas} de ${total} respuestas correctas.</div>
+    ${listaErroresHtml}
   `;
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -131,6 +148,7 @@ function validarYMostrar(e) {
   }
 
   let correctas = 0;
+  const errores = [];
   const bloques = contenedor.querySelectorAll('.question-block');
 
   bloques.forEach((block, i) => {
@@ -142,11 +160,41 @@ function validarYMostrar(e) {
     const esCorrecta = valorSeleccionado === info.correcta;
     if (esCorrecta) correctas++;
     marcarBloque(block, info.correcta);
+
+    if (!esCorrecta) {
+      const preguntaTexto = (block.querySelector('.question-label')?.textContent || '').replace(/^\s*\d+\.\s*/, '').trim();
+      const liElegida = (valorSeleccionado === null)
+        ? null
+        : block.querySelector(`.option[data-value="${valorSeleccionado}"] label`);
+      const liCorrecta = block.querySelector(`.option[data-value="${info.correcta}"] label`);
+
+      errores.push({
+        numero: i + 1,
+        pregunta: preguntaTexto || info.id,
+        elegida: liElegida ? liElegida.textContent.trim() : null,
+        correcta: liCorrecta ? liCorrecta.textContent.trim() : '(no encontrada)'
+      });
+    }
   });
 
   const total = orden.length;
   submitBtn.disabled = true;
-  mostrarResultado(correctas, total, correctas === total);
+  mostrarResultado(correctas, total, correctas === total, errores);
+
+  // Guardar resultado en Firebase (si está configurado)
+  try {
+    if (typeof window.saveQuizResult === 'function') {
+      window.saveQuizResult({
+        correctas,
+        total,
+        esExito: correctas === total,
+        errores,
+        pagina: location.pathname
+      });
+    }
+  } catch (err) {
+    console.warn('No se pudo guardar el resultado en Firebase.', err);
+  }
 }
 
 /** Inicialización al cargar la página. */
