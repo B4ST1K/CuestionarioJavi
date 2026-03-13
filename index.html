@@ -191,6 +191,10 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
     import {
+      getAuth,
+      signInAnonymously
+    } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+    import {
       getFirestore,
       addDoc,
       collection,
@@ -208,12 +212,27 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    getAnalytics(app);
+    // Analytics puede fallar en localhost/file://; no debe romper el guardado.
+    try {
+      getAnalytics(app);
+    } catch (e) {
+      console.warn("Firebase Analytics no disponible.", e);
+    }
 
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
     // Disponible para quiz.js (script no-module)
     window.saveQuizResult = async function saveQuizResult(payload) {
+      // Firestore por defecto suele requerir auth; usamos auth anónimo.
+      try {
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+      } catch (e) {
+        console.warn("No se pudo iniciar sesión anónima.", e);
+      }
+
       const doc = {
         ...payload,
         createdAt: serverTimestamp(),

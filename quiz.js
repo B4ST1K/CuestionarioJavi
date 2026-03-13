@@ -133,7 +133,7 @@ function marcarBloque(block, valorCorrecto) {
 }
 
 /** Valida el formulario y muestra resultado. */
-function validarYMostrar(e) {
+async function validarYMostrar(e) {
   e.preventDefault();
 
   const form = document.getElementById('quiz-form');
@@ -184,7 +184,7 @@ function validarYMostrar(e) {
   // Guardar resultado en Firebase (si está configurado)
   try {
     if (typeof window.saveQuizResult === 'function') {
-      window.saveQuizResult({
+      await window.saveQuizResult({
         correctas,
         total,
         esExito: correctas === total,
